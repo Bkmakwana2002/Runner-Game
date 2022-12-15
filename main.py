@@ -49,11 +49,19 @@ testFont = pygame.font.Font('font/Pixeltype.ttf', 50)
 skySurface = pygame.image.load('graphics/Sky.png').convert()
 groundSurface = pygame.image.load('graphics/ground.png').convert()
 
-# scoreSurface = testFont.render('My Game',False,(64,64,64))
-# socreRect = scoreSurface.get_rect(center = (400,50))
-
 snailSurface = pygame.image.load('graphics/snail/snail1.png').convert_alpha()
+snailFrame1 = pygame.image.load('graphics/snail/snail1.png').convert_alpha()
+snailFrame2 = pygame.image.load('graphics/snail/snail2.png').convert_alpha()
+snailFrames = [snailFrame1,snailFrame2]
+snailIndex = 0
+snailSurface = snailFrames[snailIndex]
+
 flySurface = pygame.image.load('graphics/Fly/Fly1.png').convert_alpha()
+flyFrame1 = pygame.image.load('graphics/Fly/Fly1.png').convert_alpha()
+flyFrame2 = pygame.image.load('graphics/Fly/Fly2.png').convert_alpha()
+flyFrames = [flyFrame1,flyFrame2]
+flyIndex = 0
+flySurface = flyFrames[flyIndex]
 
 obstacleReactList = []
 
@@ -87,6 +95,12 @@ score = 0
 obstacleTimer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacleTimer,1500)
 
+snailAnimationTimer = pygame.USEREVENT + 2
+pygame.time.set_timer(snailAnimationTimer, 500)
+
+flyAnimationTime = pygame.USEREVENT + 3
+pygame.time.set_timer(flyAnimationTime, 200)
+
 
 while True:
     for event in pygame.event.get():
@@ -105,11 +119,24 @@ while True:
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 gameActive = True
                 startTime = int(pygame.time.get_ticks()/1000)
-        if event.type == obstacleTimer and gameActive:
-            if randint(0, 2):
-                obstacleReactList.append(snailSurface.get_rect(midbottom = (randint(900, 1100),300)))
-            else:
-                obstacleReactList.append(flySurface.get_rect(midbottom = (randint(900, 1100),210)))
+        if gameActive:  
+            if event.type == obstacleTimer:
+                if randint(0, 2):
+                    obstacleReactList.append(snailSurface.get_rect(midbottom = (randint(900, 1100),300)))
+                else:
+                    obstacleReactList.append(flySurface.get_rect(midbottom = (randint(900, 1100),210)))
+            if event.type == snailAnimationTimer:
+                if snailIndex == 0 :
+                    snailIndex = 1
+                else:
+                    snailIndex = 0
+                snailSurface = snailFrames[snailIndex]
+            if event.type == flyAnimationTime:
+                if flyIndex == 0 :
+                    flyIndex = 1
+                else:
+                    flyIndex = 0
+                flySurface = flyFrames[flyIndex]
            
     if gameActive:
         #draw all the elements
